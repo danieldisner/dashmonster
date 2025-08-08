@@ -16,12 +16,18 @@ const queryClient = new QueryClient({
       // Manter cache por 10 minutos
       gcTime: 10 * 60 * 1000,
       // Retry automático em caso de erro
-      retry: (failureCount, error: any) => {
-        // Não fazer retry para erros 4xx (cliente)
-        if (error?.status >= 400 && error?.status < 500) {
-          return false;
+      retry: (failureCount, error: unknown) => {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'status' in error &&
+          typeof (error as { status?: number }).status === 'number'
+        ) {
+          const status = (error as { status: number }).status;
+          if (status >= 400 && status < 500) {
+            return false;
+          }
         }
-        // Máximo 3 tentativas para outros erros
         return failureCount < 3;
       },
       // Refetch ao focar na janela
@@ -31,9 +37,17 @@ const queryClient = new QueryClient({
     },
     mutations: {
       // Retry para mutations em caso de erro de rede
-      retry: (failureCount, error: any) => {
-        if (error?.status >= 400 && error?.status < 500) {
-          return false;
+      retry: (failureCount, error: unknown) => {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'status' in error &&
+          typeof (error as { status?: number }).status === 'number'
+        ) {
+          const status = (error as { status: number }).status;
+          if (status >= 400 && status < 500) {
+            return false;
+          }
         }
         return failureCount < 2;
       },

@@ -7,9 +7,6 @@ import {
   Building2,
   Package,
   CreditCard,
-  TrendingUp,
-  Activity,
-  DollarSign,
   ShoppingCart,
   Shield,
   Settings

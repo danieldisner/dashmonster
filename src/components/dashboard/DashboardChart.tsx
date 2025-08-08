@@ -6,7 +6,7 @@ export function DashboardChart() {
 
   useEffect(() => {
     if (!chartRef.current) return;
-    // @ts-ignore
+  // @ts-expect-error: dynamic import de Chart.js pode não ser tipado corretamente
     import('chart.js/auto').then(({ default: Chart }) => {
       new Chart(chartRef.current, {
         type: 'line',

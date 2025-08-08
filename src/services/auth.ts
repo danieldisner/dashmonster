@@ -1,5 +1,5 @@
 // Auth service for API integration
-import type { User, LoginForm, RegisterForm, ApiResponse } from '@/types';
+import type { User, LoginForm, ApiResponse } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
@@ -33,8 +33,7 @@ class AuthService {
 
   private getStoredUser(): User | null {
     if (typeof window === 'undefined') return null;
-    const userData = localStorage.getItem('current_user');
-    return userData ? JSON.parse(userData) : null;
+  return localStorage.getItem('current_user') ? JSON.parse(localStorage.getItem('current_user')!) : null;
   }
 
   async login(credentials: LoginForm): Promise<ApiResponse<User>> {
@@ -237,7 +236,7 @@ class AuthService {
       .catch(() => []);
   }
 
-  async register(userData: RegisterForm): Promise<ApiResponse<User>> {
+  async register(): Promise<ApiResponse<User>> {
     try {
       // TODO: Implementar registro via API quando necessário
       return {

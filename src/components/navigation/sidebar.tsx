@@ -13,7 +13,6 @@ import {
   LogOut,
   Menu,
   X,
-  UserCheck,
   Wallet,
   BarChart3,
   FileText,

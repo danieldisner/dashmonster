@@ -41,7 +41,7 @@ export interface UserWithDescription {
   description: string;
 }
 
-import type { User } from '@/types/user-management';
+
 
 const mockUsers: UserWithDescription[] = [
   {

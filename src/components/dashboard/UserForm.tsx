@@ -3,8 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+interface UserFormUser {
+  avatarUrl?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+}
 interface UserFormProps {
-  user?: any;
+  user?: UserFormUser;
   onSubmit?: (data: FormData) => Promise<void>;
 }
 
@@ -42,19 +48,19 @@ export default function UserForm({ user, onSubmit }: UserFormProps) {
             ?
           </div>
         )}
-        <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} className="mt-2" />
+  <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} className="mt-2" title="Avatar" />
       </div>
       <div>
         <label className="block mb-1">Nome</label>
-        <input name="name" defaultValue={user?.name || ""} required className="input input-bordered w-full" />
+  <input name="name" defaultValue={user?.name || ""} required className="input input-bordered w-full" placeholder="Digite o nome" title="Nome" />
       </div>
       <div>
         <label className="block mb-1">Email</label>
-        <input name="email" type="email" defaultValue={user?.email || ""} required className="input input-bordered w-full" />
+  <input name="email" type="email" defaultValue={user?.email || ""} required className="input input-bordered w-full" placeholder="Digite o e-mail" title="E-mail" />
       </div>
       <div>
         <label className="block mb-1">Função</label>
-        <select name="role" defaultValue={user?.role || "Operator"} className="input input-bordered w-full">
+  <select name="role" defaultValue={user?.role || "Operator"} className="input input-bordered w-full" title="Função">
           <option value="Admin">Admin</option>
           <option value="Operator">Operator</option>
         </select>
@@ -62,7 +68,7 @@ export default function UserForm({ user, onSubmit }: UserFormProps) {
       {!user && (
         <div>
           <label className="block mb-1">Senha</label>
-          <input name="password" type="password" required className="input input-bordered w-full" />
+          <input name="password" type="password" required className="input input-bordered w-full" placeholder="Digite a senha" title="Senha" />
         </div>
       )}
       <button type="submit" className="btn btn-primary w-full" disabled={loading}>
