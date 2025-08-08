@@ -4,7 +4,7 @@ export interface AuthenticatedUser {
   id: string;
   email: string;
   name: string;
-  role: 'Admin' | 'AccountHolder' | 'Operator' | 'Beneficiary';
+  role: 'Admin' | 'Operator';
   organizationId: string;
   tenantId: string;
   isActive: boolean;

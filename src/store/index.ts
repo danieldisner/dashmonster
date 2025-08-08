@@ -152,15 +152,7 @@ export const useIsAdmin = () => {
   return user?.role === 'Admin';
 };
 
-export const useIsAccountHolder = () => {
-  const user = useAuthStore((state) => state.user);
-  return user?.role === 'AccountHolder';
-};
 
-export const useIsBeneficiary = () => {
-  const user = useAuthStore((state) => state.user);
-  return user?.role === 'Beneficiary';
-};
 
 export const useIsOperator = () => {
   const user = useAuthStore((state) => state.user);

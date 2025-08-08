@@ -45,12 +45,6 @@ const navigationItems: NavigationItem[] = [
     roles: ['Admin'],
   },
   {
-    name: 'Responsáveis',
-    href: '/dashboard/account-holders',
-    icon: UserCheck,
-    roles: ['Admin'],
-  },
-  {
     name: 'Beneficiários',
     href: '/dashboard/beneficiaries',
     icon: Users,

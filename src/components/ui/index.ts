@@ -1,6 +1,4 @@
-export { AdaptiveBeneficiaryList } from './adaptive-beneficiary-list';
 export { Badge } from './badge';
-export { BeneficiaryCompactCard } from './beneficiary-compact-card';
 export { Button } from './button';
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
 export { Select } from './select';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { beneficiaryService } from '@/services/beneficiaryService';
+// import { beneficiaryService } from '@/services/beneficiaryService';
 import type { Unit } from '@/types';
 
 interface UseUnitsOptions {
@@ -15,8 +15,6 @@ interface UseUnitsReturn {
   isLoading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  linkUnit: (beneficiaryId: string, unitId: string) => Promise<void>;
-  unlinkUnit: (beneficiaryId: string, unitId: string) => Promise<void>;
 }
 
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutos
@@ -28,7 +26,7 @@ export function useUnits(options: UseUnitsOptions = {}): UseUnitsReturn {
     refreshInterval = 60000
   } = options;
 
-  const [units, setUnits] = useState<Unit[]>([]);
+  const [units] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState(0);
@@ -47,9 +45,9 @@ export function useUnits(options: UseUnitsOptions = {}): UseUnitsReturn {
       setIsLoading(true);
       setError(null);
       
-      const response = await beneficiaryService.getUnits();
-      setUnits(response.data);
-      setLastUpdated(Date.now());
+  // const response = await beneficiaryService.getUnits();
+  // setUnits(response.data);
+  // setLastUpdated(Date.now());
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao carregar unidades';
       setError(errorMessage);
@@ -64,25 +62,7 @@ export function useUnits(options: UseUnitsOptions = {}): UseUnitsReturn {
     await loadUnits();
   }, [loadUnits]);
 
-  // Link unit to beneficiary
-  const linkUnit = useCallback(async (beneficiaryId: string, unitId: string) => {
-    try {
-      await beneficiaryService.linkUnit(beneficiaryId, { unitId });
-      await refresh();
-    } catch (error) {
-      throw error;
-    }
-  }, [refresh]);
-
-  // Unlink unit from beneficiary
-  const unlinkUnit = useCallback(async (beneficiaryId: string, unitId: string) => {
-    try {
-      await beneficiaryService.unlinkUnit(beneficiaryId, { unitId });
-      await refresh();
-    } catch (error) {
-      throw error;
-    }
-  }, [refresh]);
+  // Link/unlink logic removed
 
   // Effects
   useEffect(() => {
@@ -104,8 +84,6 @@ export function useUnits(options: UseUnitsOptions = {}): UseUnitsReturn {
     units,
     isLoading,
     error,
-    refresh,
-    linkUnit,
-    unlinkUnit
+    refresh
   };
 }

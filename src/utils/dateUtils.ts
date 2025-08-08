@@ -1,4 +1,4 @@
-// Utility functions for date calculations and beneficiary management
+// Utility functions for date calculations
 
 /**
  * Calcula a idade atual do beneficiário

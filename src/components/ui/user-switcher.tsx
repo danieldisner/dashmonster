@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuthStore } from '@/store';
 import { useToast } from '@/components/providers/toast-provider';
 import { authService } from '@/services/auth';
-import { User, Users, Settings, Shield, UserCheck } from 'lucide-react';
+import { User, Settings, Shield, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 interface DemoCredential {
@@ -72,8 +72,6 @@ export function UserSwitcher({ className }: UserSwitcherProps) {
     switch (role) {
       case 'Admin':
         return <Shield className="h-4 w-4" />;
-      case 'AccountHolder':
-        return <Users className="h-4 w-4" />;
       case 'Operator':
         return <Settings className="h-4 w-4" />;
       default:
@@ -85,8 +83,6 @@ export function UserSwitcher({ className }: UserSwitcherProps) {
     switch (role) {
       case 'Admin':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
-      case 'AccountHolder':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
       case 'Operator':
         return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
       default:

@@ -92,21 +92,9 @@ export const roleMiddleware = (allowedRoles: string[]) => {
 
 // Middleware específicos para cada role
 export const adminOnly = roleMiddleware(['ADMIN']);
-export const accountHolderOnly = roleMiddleware(['ADMIN', 'ACCOUNT_HOLDER']);
 export const operatorOnly = roleMiddleware(['ADMIN', 'OPERATOR']);
-export const beneficiaryOnly = roleMiddleware(['ADMIN', 'BENEFICIARY']);
 
 // Middleware para múltiplos roles
-export const accountHolderOrBeneficiary = roleMiddleware([
-  'ADMIN',
-  'ACCOUNT_HOLDER',
-  'BENEFICIARY',
-]);
 
-export const operatorOrBeneficiary = roleMiddleware([
-  'ADMIN',
-  'OPERATOR',
-  'BENEFICIARY',
-]);
 
 export { AuthenticatedRequest };

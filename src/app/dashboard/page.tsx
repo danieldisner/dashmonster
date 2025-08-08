@@ -24,14 +24,6 @@ export default function DashboardRedirect() {
           console.log('➡️ DashboardRedirect: Redirecionando para Admin');
           router.replace('/dashboard/admin');
           break;
-        case 'AccountHolder':
-          console.log('➡️ DashboardRedirect: Redirecionando para AccountHolder');
-          router.replace('/dashboard/account-holder');
-          break;
-        case 'Beneficiary':
-          console.log('➡️ DashboardRedirect: Redirecionando para Beneficiary');
-          router.replace('/dashboard/beneficiary');
-          break;
         case 'Operator':
           console.log('➡️ DashboardRedirect: Redirecionando para Operator');
           router.replace('/dashboard/operator');
