@@ -1,3 +1,32 @@
+export async function createUser(data: FormData) {
+  await fetch('/api/users', {
+    method: 'POST',
+    body: data,
+  });
+}
+
+export async function getUser(id: string) {
+  const res = await fetch(`/api/users/${id}`);
+  const json = await res.json();
+  return json.data;
+}
+
+export async function updateUser(id: string, data: FormData) {
+  await fetch(`/api/users/${id}`, {
+    method: 'PUT',
+    body: data,
+  });
+}
+// Integração REST com backend para CRUD real
+export async function getUsers() {
+  const res = await fetch('/api/users');
+  const json = await res.json();
+  return json.data || [];
+}
+
+export async function deleteUser(id: string) {
+  await fetch(`/api/users/${id}`, { method: 'DELETE' });
+}
 // Serviço mock para usuários
 export interface UserWithDescription {
   id: string;

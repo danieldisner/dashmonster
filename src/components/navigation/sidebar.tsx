@@ -40,7 +40,7 @@ const navigationItems: NavigationItem[] = [
   },
   {
     name: 'Usuários',
-    href: '/dashboard/users',
+    href: '/dashboard/admin/users',
     icon: Users,
     roles: ['Admin'],
   },

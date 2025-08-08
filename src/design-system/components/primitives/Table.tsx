@@ -44,6 +44,7 @@ interface TableCellProps {
   className?: string;
   align?: 'left' | 'center' | 'right';
   style?: React.CSSProperties;
+  colSpan?: number;
 }
 
 interface TableCaptionProps {
@@ -237,7 +238,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
 TableHead.displayName = 'TableHead';
 
 export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  ({ children, className, align = 'left', ...props }, ref) => (
+  ({ children, className, align = 'left', colSpan, ...props }, ref) => (
     <td
       ref={ref}
       className={cn(
@@ -246,6 +247,7 @@ export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
         align === 'right' && 'text-right',
         className
       )}
+      colSpan={colSpan}
       {...props}
     >
       {children}
