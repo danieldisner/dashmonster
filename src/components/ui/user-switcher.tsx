@@ -4,11 +4,17 @@ import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { useAuthStore } from '@/store';
 import { useToast } from '@/components/providers/toast-provider';
-import { userService } from '@/services/user';
+import { authService } from '@/services/auth';
 import { User, Users, Settings, Shield, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import type { UserWithDescription } from '@/services/user';
+interface DemoCredential {
+  email: string;
+  password: string;
+  name: string;
+  role: string;
+  description: string;
+}
 
 interface UserSwitcherProps {
   className?: string;
@@ -16,7 +22,7 @@ interface UserSwitcherProps {
 
 export function UserSwitcher({ className }: UserSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [availableUsers, setAvailableUsers] = useState<UserWithDescription[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<DemoCredential[]>([]);
   const { user, login } = useAuthStore();
   const { showToast } = useToast();
   const router = useRouter();
@@ -25,52 +31,40 @@ export function UserSwitcher({ className }: UserSwitcherProps) {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const users = await userService.getAvailableUsers();
-        setAvailableUsers(users);
+        const demoUsers = await authService.getDemoCredentials();
+        setAvailableUsers(demoUsers);
       } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
+        console.error('Erro ao carregar usuários demo:', error);
         showToast({
           type: 'error',
           title: 'Erro ao carregar usuários',
-          description: 'Não foi possível carregar a lista de usuários disponíveis'
+          description: 'Não foi possível carregar a lista de usuários de demonstração'
         });
       }
     };
-
     loadUsers();
   }, [showToast]);
 
-  const handleUserSwitch = (newUser: UserWithDescription) => {
-    console.log('🔄 UserSwitcher: Trocando de usuário:', user?.id, '->', newUser.id);
-    
-    login(newUser);
+  const handleUserSwitch = (newUser: DemoCredential) => {
+    console.log('🔄 UserSwitcher: Trocando de usuário:', user?.email, '->', newUser.email);
+    login({ ...newUser, id: newUser.email });
     setIsOpen(false);
-    
     showToast({
       type: 'success',
       title: 'Usuário alterado',
       description: `Logado como ${newUser.name} (${newUser.role})`
     });
-
-    console.log('✅ UserSwitcher: Login executado, novo usuário deveria ser:', newUser.id);
-    
     // Redirecionar para o dashboard correto baseado no role
     const redirectPath = (() => {
       switch (newUser.role) {
         case 'Admin':
           return '/dashboard/admin';
-        case 'AccountHolder':
-          return '/dashboard/account-holder';
-        case 'Beneficiary':
-          return '/dashboard/beneficiary';
         case 'Operator':
           return '/dashboard/operator';
         default:
           return '/dashboard';
       }
     })();
-
-    console.log('🔄 UserSwitcher: Redirecionando para:', redirectPath);
     router.push(redirectPath);
   };
 
@@ -169,11 +163,11 @@ export function UserSwitcher({ className }: UserSwitcherProps) {
                 <div className="space-y-1">
                   {availableUsers.map((testUser) => (
                     <button
-                      key={testUser.id}
+                      key={testUser.email}
                       onClick={() => handleUserSwitch(testUser)}
-                      disabled={testUser.id === user?.id}
+                      disabled={testUser.email === user?.email}
                       className={`w-full p-2 text-left rounded-lg transition-all ${
-                        testUser.id === user?.id
+                        testUser.email === user?.email
                           ? 'bg-blue-50 dark:bg-blue-900/20 cursor-not-allowed opacity-50'
                           : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
@@ -187,7 +181,7 @@ export function UserSwitcher({ className }: UserSwitcherProps) {
                             <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                               {testUser.name}
                             </p>
-                            {testUser.id === user?.id && (
+                            {testUser.email === user?.email && (
                               <Badge className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 text-xs">
                                 ✓
                               </Badge>

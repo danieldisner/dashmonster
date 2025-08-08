@@ -10,7 +10,9 @@ import {
   TrendingUp,
   Activity,
   DollarSign,
-  ShoppingCart
+  ShoppingCart,
+  Shield,
+  Settings
 } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { RoleGuard } from '@/components/auth';
@@ -78,62 +80,41 @@ export default function AdminDashboard() {
   }
 
   const statsCards = [
-    {
-      title: 'Total de Usuários',
-      value: stats?.totalUsers.toLocaleString('pt-BR') || '0',
-      icon: Users,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/20'
-    },
-    {
-      title: 'Organizações',
-      value: stats?.totalOrganizations.toString() || '0',
-      icon: Building2,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/20'
-    },
-    {
-      title: 'Unidades Ativas',
-      value: `${stats?.activeUnits}/${stats?.totalUnits}`,
-      icon: Package,
-      color: 'text-green-500',
-      bgColor: 'bg-green-100 dark:bg-green-900/20'
-    },
-    {
-      title: 'Créditos Totais',
-      value: `R$ ${stats?.totalCredits.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-      icon: CreditCard,
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-100 dark:bg-yellow-900/20'
-    },
-    {
-      title: 'Transações Hoje',
-      value: stats?.todayTransactions.toString() || '0',
-      icon: Activity,
-      color: 'text-indigo-500',
-      bgColor: 'bg-indigo-100 dark:bg-indigo-900/20'
-    },
-    {
-      title: 'Total Transações',
-      value: stats?.totalTransactions.toLocaleString('pt-BR') || '0',
-      icon: TrendingUp,
-      color: 'text-red-500',
-      bgColor: 'bg-red-100 dark:bg-red-900/20'
-    },
-    {
-      title: 'Receita Mensal',
-      value: `R$ ${stats?.monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-      icon: DollarSign,
-      color: 'text-emerald-500',
-      bgColor: 'bg-emerald-100 dark:bg-emerald-900/20'
-    },
-    {
-      title: 'Ticket Médio',
-      value: `R$ ${((stats?.monthlyRevenue || 0) / (stats?.todayTransactions || 1)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-      icon: ShoppingCart,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-100 dark:bg-orange-900/20'
-    }
+      {
+        title: 'Usuários',
+        value: stats?.totalUsers ? stats.totalUsers.toLocaleString('pt-BR') : '0',
+        icon: Users,
+        color: 'text-blue-500',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/20'
+      },
+      {
+        title: 'Empresas',
+        value: stats?.totalCompanies ? stats.totalCompanies.toLocaleString('pt-BR') : '0',
+        icon: Building2,
+        color: 'text-purple-500',
+        bgColor: 'bg-purple-100 dark:bg-purple-900/20'
+      },
+      {
+        title: 'Funções (Roles)',
+        value: stats?.totalRoles ? stats.totalRoles.toLocaleString('pt-BR') : '0',
+        icon: Shield,
+        color: 'text-green-500',
+        bgColor: 'bg-green-100 dark:bg-green-900/20'
+      },
+      {
+        title: 'Permissões',
+        value: stats?.totalPermissions ? stats.totalPermissions.toLocaleString('pt-BR') : '0',
+        icon: Settings,
+        color: 'text-yellow-500',
+        bgColor: 'bg-yellow-100 dark:bg-yellow-900/20'
+      },
+      {
+        title: 'Menus',
+        value: stats?.totalMenus ? stats.totalMenus.toLocaleString('pt-BR') : '0',
+        icon: Package,
+        color: 'text-pink-500',
+        bgColor: 'bg-pink-100 dark:bg-pink-900/20'
+      },
   ];
 
   return (
@@ -184,40 +165,35 @@ export default function AdminDashboard() {
             {recentTransactions.map((transaction) => (
               <div key={transaction.id} className="p-6 flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className={`p-2 rounded-full ${transaction.type === 'purchase'
-                      ? 'bg-blue-100 dark:bg-blue-900/20'
-                      : 'bg-green-100 dark:bg-green-900/20'
-                    }`}>
-                    {transaction.type === 'purchase' ? (
-                      <ShoppingCart className={`h-4 w-4 ${transaction.type === 'purchase' ? 'text-blue-500' : 'text-green-500'
-                        }`} />
+                  <div className={`p-2 rounded-full ${transaction.status === 'success'
+                      ? 'bg-green-100 dark:bg-green-900/20'
+                      : transaction.status === 'pending'
+                        ? 'bg-yellow-100 dark:bg-yellow-900/20'
+                        : 'bg-red-100 dark:bg-red-900/20'}`}>
+                    {transaction.status === 'success' ? (
+                      <ShoppingCart className="h-4 w-4 text-green-500" />
+                    ) : transaction.status === 'pending' ? (
+                      <CreditCard className="h-4 w-4 text-yellow-500" />
                     ) : (
-                      <CreditCard className="h-4 w-4 text-green-500" />
+                      <CreditCard className="h-4 w-4 text-red-500" />
                     )}
                   </div>
                   <div>
                     <p className="font-medium text-foreground">
-                      {transaction.beneficiaryName}
+                      {transaction.user}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {transaction.unitName} • {' '}
-                      {new Date(transaction.timestamp).toLocaleString('pt-BR', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+                      {transaction.date}
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <p className={`font-medium ${transaction.type === 'purchase' ? 'text-red-500' : 'text-green-500'
-                    }`}>
-                    {transaction.type === 'purchase' ? '-' : '+'}R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  <p className={`font-medium ${transaction.status === 'success' ? 'text-green-500' : transaction.status === 'pending' ? 'text-yellow-500' : 'text-red-500'}`}> 
+                    R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    {transaction.type === 'purchase' ? 'Compra' : 'Crédito'}
+                  <p className="text-xs text-muted-foreground">
+                    {transaction.status === 'success' ? 'Sucesso' : transaction.status === 'pending' ? 'Pendente' : 'Falha'}
                   </p>
                 </div>
               </div>

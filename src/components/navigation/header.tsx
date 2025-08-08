@@ -16,7 +16,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useAuthStore } from '@/store';
-import { useDashboardStats } from '@/hooks/useAccountHolderDashboard';
 import { useTheme } from '@/components/providers/theme-provider';
 import { useToast } from '@/components/providers/toast-provider';
 import { UserSwitcher } from '@/components/ui/user-switcher';
@@ -31,7 +30,6 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const { user, logout } = useAuthStore();
-  const stats = useDashboardStats();
   const { theme, toggleTheme } = useTheme();
   const { showToast } = useToast();
   const router = useRouter();
