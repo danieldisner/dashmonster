@@ -124,3 +124,6 @@ docs/.docusaurus/
 .turbo/
 .rush/
 tsconfig.tsbuildinfo
+
+*storybook.log
+storybook-static

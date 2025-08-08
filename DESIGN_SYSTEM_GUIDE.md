@@ -98,4 +98,10 @@ Sugestão: Use comentários JSDoc nos arquivos `.tsx` e mantenha exemplos em um 
 
 ---
 
+Configurar o Storybook para documentação visual e playground dos componentes.
+Criar templates de documentação para cada novo componente (exemplo de README/MDX/JSDoc).
+Sugerir processos para manter o design system desacoplado e fácil de extrair.
+Orientar sobre versionamento, changelog e checklist de PRs para garantir documentação viva.
+Automatizar geração de docs e exemplos.
+
 > Mantenha este documento sempre atualizado conforme o design system evoluir!
