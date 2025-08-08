@@ -1,0 +1,1 @@
+Os arquivos de teste antigos foram removidos em 2025-08-08 devido à limpeza de domínios legados (accountholder, beneficiary, cantx) e ausência de testes válidos. Recomenda-se criar novos testes para os domínios atuais do sistema.
