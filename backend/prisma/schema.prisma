@@ -1,0 +1,154 @@
+// Documentação: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum UserRole {
+  Admin
+  Operator
+}
+
+// =============================================================================
+// MODELS
+// =============================================================================
+
+model Tenant {
+  id          String   @id @default(cuid())
+  name        String
+  logoUrl     String?
+  themeColor  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  roles       Role[]
+  menus       Menu[]
+  companies   Company[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  password       String
+  name           String
+  role           UserRole
+  isActive       Boolean  @default(true)
+  lastLogin      DateTime?
+  photoUrl       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+
+  userRoleAssignments UserRoleAssignment[]
+  companiesOwned      Company[] @relation("CompanyOwner")
+
+  @@map("users")
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  cnpj        String   @unique
+  tradeName   String?
+  address     String?
+  phone       String?
+  email       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+
+  ownerId     String
+  owner       User     @relation("CompanyOwner", fields: [ownerId], references: [id])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+
+  permissions RolePermission[]
+  userRoles   UserRoleAssignment[]
+
+  @@unique([name, tenantId])
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roles           RolePermission[]
+  menuPermissions MenuPermission[]
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+}
+
+model UserRoleAssignment {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+model Menu {
+  id          String   @id @default(cuid())
+  label       String
+  icon        String?
+  path        String?
+  order       Int      @default(0)
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+
+  parent      Menu?    @relation("MenuToSubmenu", fields: [parentId], references: [id])
+  children    Menu[]   @relation("MenuToSubmenu")
+  permissions MenuPermission[]
+}
+
+model MenuPermission {
+  id           String @id @default(cuid())
+  menuId       String
+  permissionId String
+
+  menu         Menu       @relation(fields: [menuId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([menuId, permissionId])
+}

@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: dashmonster
+      POSTGRES_PASSWORD: dashmonster123
+      POSTGRES_DB: dashmonster
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dashmonster"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dashmonster-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://dashmonster:dashmonster123@postgres:5432/dashmonster
+      CORS_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+      PORT: 4000
+      JWT_SECRET: development-secret-key
+      JWT_REFRESH_SECRET: development-refresh-secret-key
+      ENABLE_DEMO_CREDENTIALS: "true"
+    ports:
+      - '4000:4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - dashmonster-network
+
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      NODE_ENV: development
+      DOCKER_ENV: true
+      # Use localhost para o navegador, /api para proxy interno
+      NEXT_PUBLIC_API_URL: "http://localhost:4000/api"
+      NEXT_PUBLIC_BACKEND_URL: "http://localhost:4000/api"
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - dashmonster-network
+
+volumes:
+  postgres_data:
+
+networks:
+  dashmonster-network:
+    driver: bridge
